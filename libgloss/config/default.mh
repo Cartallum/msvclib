@@ -1,0 +1,31 @@
+MSVCLIB_CFLAGS = `if [ -d ${objroot}/msvclib ]; then echo -I${objroot}/msvclib/targ-include -I${srcroot}/msvclib/libc/include; fi`
+MSVCLIB_LDFLAGS = `if [ -d ${objroot}/msvclib ]; then echo -B${objroot}/msvclib/ -L${objroot}/msvclib/; fi`
+
+INCLUDES = -I. -I$(srcdir)/..
+# Note that when building the library, ${MULTILIB} is not the way multilib
+# options are passed; they're passed in $(CFLAGS).
+CFLAGS_FOR_TARGET = -O2 -g ${MULTILIB} ${INCLUDES} ${MSVCLIB_CFLAGS}
+LDFLAGS_FOR_TARGET = ${MULTILIB} ${MSVCLIB_LDFLAGS}
+AR_FLAGS = rc
+
+.c.o:
+	$(CC) $(CFLAGS_FOR_TARGET) -O2 $(INCLUDES) -c $(CFLAGS) $<
+
+.C.o:
+	$(CC) $(CFLAGS_FOR_TARGET) -O2 $(INCLUDES) -c $(CFLAGS) $<
+.s.o:
+	$(AS) $(ASFLAGS_FOR_TARGET) $(INCLUDES) $(ASFLAGS) -o $*.o $<
+
+#
+# GCC knows to run the preprocessor on .S files before it assembles them.
+#
+.S.o:
+	$(CC) $(CFLAGS_FOR_TARGET) $(INCLUDES) $(CFLAGS) -c $<
+
+#
+# this is a bogus target that'll produce an assembler from the
+# C source with the right compiler options. this is so we can
+# track down code generation or debug symbol bugs.
+#
+.c.s:
+	$(CC) $(CFLAGS_FOR_TARGET) -S $(INCLUDES) $(CFLAGS) $<

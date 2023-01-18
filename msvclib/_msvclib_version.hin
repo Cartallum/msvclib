@@ -1,0 +1,11 @@
+/* Version macros for internal and downstream use. */
+#ifndef _MSVCLIB_VERSION_H__
+#define _MSVCLIB_VERSION_H__ 1
+
+#undef _MSVCLIB_VERSION
+#undef __MSVCLIB__
+#undef __MSVCLIB_MINOR__
+#undef __MSVCLIB_PATCHLEVEL__
+
+#endif /* !_MSVCLIB_VERSION_H__ */
+
